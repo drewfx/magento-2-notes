@@ -1,17 +1,24 @@
 ## Magento Outline
 
-###### Links
-[6 Goals of Magento](#goalsofmagento)
-[]()
-[]()
-[]()
-[]()
+###### Quick View
+[6 Goals of Magento](#goalsofmagento)</br>
+[Essential Concepts](#essentialconcepts)</br>
+[File Architecture](#filearchitecture)</br>
+[File Structure](#filestructure)</br>
+[Module Structure](#modulestructure)</br>
+[Modes](#modes)</br>
+[Cli](#cli)</br>
+[Cache](#cache)</br>
+[Dependency Injection](#DI)</br>
+[Object Manager](#OM)</br>
+[Plugins](#plugin)</br>
 
 
 
 
 * flexible, open source commerce platform
 * Zend + MVC
+
 
 #### 6 Key Goals<a name="goalsofmagento"></a>
 * Streamline Customization Process
@@ -21,14 +28,8 @@
 * Improved Performance and Scalability
 * High Quality Tested Code
 
-#### Modules
-* Area
-  * Scope of configuration allows Magento to load only required config files.
-  * Only dependent config options for that area are loaded
-  * Typically have both behavior and view componenets
-  * Technically six areas, but work with two, Adminhtml, frontend.
 
-#### Magento Essential Concepts
+#### Essential Concepts<a name="essentialconcepts"></a>
 * Modular code structure
   * not framework files or static theme files
 * Themes
@@ -45,7 +46,8 @@
   * need controller, and register routes in routes.xml
 * Events and plugins
 
-#### File architecture
+#### File architecture<a name="filearchitecture"></a>
+
 | Component | Location | Comment |
 |   ---     |    ---   |   ---   |
 | Configuration | /app/etc/ | env.php, modules.php |
@@ -82,7 +84,12 @@
 * add class to core's class array constructors
 * controllers
 
-#### Modules
+#### Modules<a name="modules"></a>
+* Area
+  * Scope of configuration allows Magento to load only required config files.
+  * Only dependent config options for that area are loaded
+  * Typically have both behavior and view componenets
+  * Technically six areas, but work with two, Adminhtml, frontend
 * basically a package of code that encapsulates a particular business feature or set of features.
 * logical group, minimum dependencies on other modules
 * located under /app/code or 3rd party in vendor directory of Magento install.
@@ -103,7 +110,7 @@
   * declare dependencies that module has on other modules in composer.json
   * define desired load order of the files in module.xml
 
-#### File System
+#### File System<a name="filestructure"></a>
 ```
   app/
     |-- etc/            global configuration
@@ -121,9 +128,9 @@
   setup/    installation files
   var/      cache files, logs, generated code
 ```
-###### Module Structure
+#### Module Structure<a name="modulestructure"></a>
 [Structure Dev Docs](http://devdocs.magento.com/guides/v2.0/extension-dev-guide/build/module-file-structure.html)
-```js
+```
   AcmeModule
     |-- Api/
     |-- Block/
@@ -157,7 +164,7 @@
     |-- registration.php
 ```
 
-#### Modes in Magento 2
+#### Modes in Magento <a name="modes"></a>
 * **Developer**
   * static file materialization is not enabled
   * uncaught exceptions displayed in browser
@@ -176,15 +183,134 @@
 * **Maintenance**
   * make site unavailable to the public during updates
   * create ```var/.maintenance.flag``` to enable
-* main difference:
+* Other:
   * static view files get served.  css,js,html
   * things that must be processed before given to browser
-* set mode in the ```.htaccess``` file by setting ```SetEnv MAGE_MODE=<mode>```
+  * set mode in the ```.htaccess``` file by setting ```SetEnv MAGE_MODE=<mode>```
 
 | | Static File Caching | Exceptions Displayed | Exceptions Logged | Performance Impacted (-) |
-| --- | --- | --- | --- | --- |
+| --- | :---: | :---: | :---: | :---: |
 | Developer | | X | | X |
 | Production | | | X | |
 | Default | X | | X | X | |
 
-#### CLI
+#### Cli<a name="cli"></a>
+* Based on Symfony
+  * Install Magento
+  * Clear cache
+  * Manage indexes
+  * Generate non-existent classes
+  * Enable/disable available modules
+  * Deploy static view files
+
+#### Cache<a name="cache"></a>
+* Can clear cache 3 ways
+  * From the backend (Admin)
+  * Using the CLI bin/magento cache:clean
+  * Manually remove cache files
+
+#### Dependency Injection<a name="DI"></a>
+* Object dependencies are passed **(injected)** into an object instead of being pulled by the object from the environment.
+* A dependency **(coupling)** implies that one component relies on another component to perform a function.
+* A large amount of dependency limits code reuse and makes moving components to new projects difficult.
+> ``` di.xml <=> list of interfaces, classes, factories =>__construct(...) ```
+
+* Different Classes Instantiation
+  1. Singleton-type classes... inserted by DI
+  2. Entry classes... created by favorites or respositories
+  3. Factories... auto-generated classes.
+
+#### Object Manager<a name="OM"></a>
+* A class provided by Magento Framework which is responsible for:
+  1. Creating objects
+  2. Implementing singleton pattern
+  3. Managing dependencies
+  4. Automatically instantiating parameters
+* It defines:
+  1. **Parameters**: Variables declared in the constructor signature.
+  2. **Arguments**: Values passed to the constructor when the class instance is created.
+* Uses configuration from ```di.xml``` files to define which instances to deliver to the constructor of a class.
+* Each module can have multiple ```di.xml``` files (global and specific for an area); all these files are merged.
+
+#### Plugins<a name="plugin"></a>
+* Used to extend (change) the behavior of any native method within a Magento class.  Plugins change the *behavior* of the original class, but not the class itself.
+  * Cannot use for final methods, final classes, private methods, or classes without DI.
+
+```XML
+<!--
+You declare a plugin for an object in the
+di.xml file for a module.
+sortOrder & disabled are optional, best left out.
+-->
+<config>
+    <type name="{ObservedType}">
+      <plugin name="{pluginName}"
+        type="{PluginClassName}"
+        sordOrder="1"
+        disabled="true"/>
+
+    </type>
+</config>
+```
+
+```php
+<?php
+/**
+ * To change arguments of an original method, or add some behavior
+ * before the method is called, use before-listener method.
+ */
+namespace My\Module\Model\Product
+
+class pluginName
+{
+  public function beforeSetName(\Magento\Catalog\Model\Product $subject, $name)
+  {
+    return ['('.$name.')'];
+  }  
+}
+```
+
+```php
+<?php
+/**
+ * To change values returned by an original method, or add behavior after an original method,
+ * use the after-listener method.
+ */
+namespace My\Module\Model\Product
+
+class pluginName
+{
+  public function afterGetName(\Magento\Catalog\Model\Product $subject, $result)
+  {
+    return '|' . $result . '|';
+  }  
+}
+```
+
+```php
+<?php
+/**
+ * To change both arguments and values returned or add behavior before/after the method is called,
+ * use the around-listener method.
+ *
+ * $subject - provides access to all public methods of original class.
+ * $proceed - a lambda that will call next plugin or method.
+ *
+ * Any further arguments will be passed to the around plugin methods after the
+ * subject and proceed arguments, they have to passed on to the next plugin.
+ */
+namespace My\Module\Model\Product
+
+class pluginName
+{
+  public function aroundSave(\Magento\Catalog\Model\Product $subject, \Closure $proceed)
+  {
+    $this->doSomethingBeforeProductIsSaved();
+    $returnValue = $proceed();
+    if ($returnValue) {
+      $this->postProductToFacebook();
+    }
+    return $returnValue;
+  }
+}
+```

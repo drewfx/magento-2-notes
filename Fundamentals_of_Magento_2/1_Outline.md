@@ -314,3 +314,13 @@ class pluginName
   }
 }
 ```
+
+#### Configuration Files
+* Load config files
+  * Primary: Loaded on bootstrap, include config files needed for app start and installation specific configuration.
+  * Global: Include config files common across all app areas from all modules.
+  * Area-specific: Files that apply to specific areas, such as adminhtml and the frontend.
+* Configuration files are validated against a schema specific to its configuration type.
+* I.E. ```events.xml``` is validated by ```events.xsd```
+* Provide two schemas for validating the configuration files (unless the rules are the same), individual schema, merged schema.
+* New configuration files must by accompanied by XSD validation schemas.  An XML configuration file and its XSD validation file must have the same name. 

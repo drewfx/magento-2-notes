@@ -127,8 +127,8 @@ Browser sends request to server or application, accesses the url_rewrite table. 
 ```
 
 **Unit 2 Question Answers:**  
-A regular Magento 2 route has how many chunks?  ```4```  
-Which config file is used to define a frontName that the module's controllers will process? ```routes.xml```  
-Which method should a standard controller implement? ```execute()```  
-Which of the following is a front controller responsibility in Magento 2? ```To define a router.```  
-A controller should return an instance of which class to render a json array? ```\Magento\Framework\Controller\Result\Json```
+1. A regular Magento 2 route has how many chunks?  ```4```  
+2. Which config file is used to define a frontName that the module's controllers will process? ```routes.xml```  
+3. Which method should a standard controller implement? ```execute()```  
+4. Which of the following is a front controller responsibility in Magento 2? ```To define a router.```  
+5. A controller should return an instance of which class to render a json array? ```\Magento\Framework\Controller\Result\Json```

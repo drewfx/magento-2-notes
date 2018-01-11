@@ -330,4 +330,4 @@ app/
 2. Which of the directives will assign a template to a block in the layout xml file: ```<block template="test.phtml"/>```
 3. Which file contains the initial structure of containers used by the page layout: ```empty.xml```
 4. Which one of the elements of layout will automatically render all it's children: ```<container>```
-5. Which block methods are available in a template: Only public methods (?)
+5. Which block methods are available in a template: Only public getters (?)

@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+ * Copyright © 2017 Magento. All rights reserved.
+ * See COPYING.txt for license details.
+ */
+-->
+<page>
+    <body>
+        <referenceContainer name="content">
+            <block class="Unit4\RootCategories\Block\StoresList" name="stores.listing"/>
+        </referenceContainer>
+    </body>
+</page>

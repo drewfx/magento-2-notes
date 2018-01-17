@@ -1,0 +1,14 @@
+<?xml version="1.0"?>
+<!--
+/**
+* Copyright © 2017 Magento. All rights reserved.
+* See COPYING.txt for license details.
+*/
+-->
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:module:Magento_Backend:etc/menu.xsd">
+    <menu>
+        <add id="Unit6_ComputerGames::games_list" title="PC Games" module="Unit6_ComputerGames"
+             parent="Magento_Catalog::inventory" resource="Magento_CMS::page"
+             sortOrder="0" action="games/grid/index"/>
+    </menu>
+</config>

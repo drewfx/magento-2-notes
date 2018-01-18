@@ -73,7 +73,7 @@ Grid components
 * frontend model implementation extends ```Magento/Config/Block/System/Config/Form``` which itself extends ``` Magento/Backend/Block/Template```.
 * Menu config file is setup in ```menu.xml```.  Add new items using ```<add>``` directive with name (id attribute), module it belongs to, a visible title, and an ACL (resource attribute).
 
-####### ACL
+###### ACL
 * Defined in ```acl.xml```.
 
 ```php

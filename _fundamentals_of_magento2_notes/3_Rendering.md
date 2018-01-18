@@ -7,24 +7,24 @@
 * UIComponents: piece of UI that are rendered by JS but still depend on backend to obtain data.
 * Design Layout files pull together the entire set of template files to be rendered.
 
-<img src="../images/process_flow.png" width="400px">
+<img src="../images/process_flow.PNG" width="400px">
 
 #### Rendering Flow
 * result object, page object.
 
-<img src="../images/rendering_steps.png" width="400px">
+<img src="../images/rendering_steps.PNG" width="400px">
 
-<img src="../images/flow_diagram.png" width="400px">
+<img src="../images/flow_diagram.PNG" width="400px">
 
 Result Objects  
-<img src="../images/result_objects.png" width="400px">
+<img src="../images/result_objects.PNG" width="400px">
 
 Page Render  
 >  ```appendBody``` will add generated html to the response object.  Variables are obtained in the ```render()``` method and  are echoed in the ```renderPage()``` which includes the root template.
 
-<img src="../images/page_render.png" width="400px">
+<img src="../images/page_render.PNG" width="400px">
 
-<img src="../images/public_build_flow.png" width="400px">
+<img src="../images/public_build_flow.PNG" width="400px">
 
 #### View Elements
 * Containers, Blocks, UIComponents
@@ -44,9 +44,9 @@ Page Render
 * Templates draw elements, and blocks contain the data or a method to access the data.
 * Before including rootTemplate, in Page::render(), it executes Layout::getOutput() which renders most of the content on the page.
 
-<img src="../images/get_output.png" width="400px">
+<img src="../images/get_output.PNG" width="400px">
 
-<img src="../images/layout_xml_struct.png" width="400px">
+<img src="../images/layout_xml_struct.PNG" width="400px">
 
 
 #### Block Architecture and Life Cycle
@@ -99,11 +99,11 @@ _afterToHtml()
   * ```_prepareLayout()``` method is called on every block.
   * Nothing rendered yet.
 
-  <img src="../images/generating_blocks.png" width="400px">
+  <img src="../images/generating_blocks.PNG" width="400px">
 
-  <img src="../images/generate_elements.png" width="400px">
+  <img src="../images/generate_elements.PNG" width="400px">
 
-  <img src="../images/generator_block.png" width="400px">
+  <img src="../images/generator_block.PNG" width="400px">
 
 
 * **GeneratorContainer::process()**
@@ -111,7 +111,7 @@ _afterToHtml()
 
 
 * **Rendering**  
-<img src="../images/rendering_diagram.png" width="400px">
+<img src="../images/rendering_diagram.PNG" width="400px">
 
 #### Templates
 * Snippets of HTML code (.phtml) that contain PHP elements such as: PHP, Variables, Calls for class methods.

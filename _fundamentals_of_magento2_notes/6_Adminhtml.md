@@ -94,3 +94,10 @@ protected function _isAllowed()
   return $this->_authorization->isAllowed('Magento_Catalog::products');
 }
 ```
+
+#### Quiz (one is wrong don't remember which one)
+1. Which file is responsible for adding new configuration options to system configuration (under etc/adminhtml): ```system.xml```
+2. Which one of the following is a class that admin actions must extend: ```\Magento\Backend\App\Action```
+3. In order to add a new column to a grid, you should: ```Add a new column in the layout xml file```
+4. In order to create a grid, you should use a(n): ```UiComponent```
+5. Which method is responsible for checking acl permission in the admin actions: ```_isAllowed()```

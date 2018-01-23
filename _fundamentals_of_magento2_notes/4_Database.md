@@ -47,17 +47,97 @@ class Block extends Magento\Framework\Model\Resource\Db\AbstractDb
     $this->_init('cms_block', 'block_id');
   }
 }
-
 ```
 
 #### Models Detailed Workflow
+CRUD Workflow
 
+Read
+```php
+// Requires an argument for retrieving records
+// Always returns an object instance
+// Allows specs of second argument for selecting a record based on a given property/column name
+<?php
+$resourceModel->load($model, $id, $field = null)
+```
+Save
+```php
+// Used for inserts and updates
+<?php
+$resourceModel->save($model)
+```
+
+Validate
+```php
+// Initiates validator factory
+<?php
+$resourceModel->validateBeforeSave($)
+```
 
 #### Setup Scripts & Setup Resources
+* Install scripts are run only once per module
+* Upgrade scripts are run after an install and upon subsequent upgrades
+* ```setup_version``` is required to be set no matter what
 
+```php
+<?php
+// Install must implement proper interface
+use Magento\Framework\Setup\InstallSchemaInterface;
+use Magento\Framework\Setup\ModuleContextInterface;
+use Magento\Framework\Setup\SchemaSetupInterface;
+
+class InstallSchema implements InstallSchemaInterface
+{
+  public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
+  {
+    $setup->startSetup();
+    // ...logic
+    $setup->endSetup();
+  }
+}
+
+// Upgrade must implement proper interface
+use Magento\Framework\Setup\UpgradeSchemaInterface;
+use Magento\Framework\Setup\ModuleContextInterface;
+use Magento\Framework\Setup\SchemaSetupInterface;
+
+class UpgradeSchema implements InstallSchemaInterface
+{
+  public function upgrade(SchemaSetupInterface $setup, ModuleContextInterface $context)
+  {
+    $setup->startSetup();
+    // ...logic
+    $setup->endSetup();
+  }
+}
+
+./magento setup:db:status
+./magento setup:upgrade
+
+```
 
 #### EAV Concepts
+Entity -> Attribute -> Value
 
+* Separates values from attributes and entities
+* Encapsulates attribute-related business logic
+* Makes multiple-scope values possible
+* Makes adding and removing attributes very easy
+
+Meta Information
+* Entity type
+* Attribute per entity type
+* Attribute set and groups
+
+Content
+* Entity records
+* Attribute values
+
+<img src="../images/eav_overview.PNG">
+
+<img src="../images/eav_meta.PNG">
+
+<img src="../images/entity_types.PNG">
 
 #### EAV Entity Load & Save
 

@@ -1,5 +1,32 @@
 ## Service Contracts
 
+#### Service Contracts Overview
+* Improve upgrade process
+* Formalize customization
+* Decouple modules
+
+* Interfaces for modules to declare standard APIs. Service layer used for making customization without dabbling in core.
+
+* Data API provides access to modules entity data.
+  * ```_MODULE_NAME/api/data```
+* Operational API drives bussines operations supplied by modules.
+  * ```_MODULE_NAME/api/```
+
+#### Services API
+###### Framework API
+* Repositories provide teh equivalent of service-level collections, while the business logic API provides the actual business operations.
+* The framework API provides interfaces, implementations, and classes for various parts.
+
+Repositories
+  * Provide access to databases through he services API
+  * Interface that provides access to a set of objects using the ```getList()``` methods, receives an instance of the ```SearchCriteriaInterface``` as defined as part of the framework.
+  * The framework also supplies an implementation for that interface.
+
+
+#### Data API
+
+
+#### Web API
 
 
 #### Quiz (One is wrong)

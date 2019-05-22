@@ -1,67 +1,147 @@
-* Layout XML how to set ViewModel into model  
-Add additional XML argument
+#### Layout XML how to set ViewModel into model  
+* Offloads features from `Block` classes into separate `ViewModel` classes.  
+* Extends `\Magento\Framework\View\Element\Block\ArgumentInterface`
+* Add additional `XML` argument to the `Block` class.
+* Reason? Simplifies the structure and clutter of your code, instead of extending `\Magento\Framework\View\Element\Template` and having to pass all DI for parent and child in constructor you just pass the DI for the ViewModel now without having to worry about parent.
+* Instead of `$block->getSomething()` it's now `$viewModel->getSomething()`
 
-* Relation between block and template (phtml) (ex. One block to multiple templates)  
+```xml
+<block class="Drewsauace\Example\Block\Dummy" name="dummy">
+    <arguments>
+        <argument name="view_model" xsi:type="object">Drewsauace\Example\ViewModel\Dummy</argument>
+    </arguments>
+</block>
+```
+```php
+<?php
+namespace Drewsauace\Example\ViewModel;
+
+class Dummy implements \Magento\Framework\View\Element\Block\ArgumentInterface
+{
+    public function __construct()
+    {
+    }
+}
+```
+
+#### Create a theme
+Namespace: `Drewsauce`  
+Theme: `Fresh`  
+Path: `$MAGENTO_ROOT/app/design/frontend/Drewsauce/Fresh/`  
+ThemeXML Path: `$MAGENTO_ROOT/app/design/frontend/Drewsauce/Fresh/theme.xml`  
+Theme XML:
+```xml
+<theme xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Config/etc/theme.xsd">
+     <title>Drewsauce Theme</title> <!-- your theme's name -->
+     <parent>Magento/blank</parent> <!-- the parent theme, in case your theme inherits from an existing theme -->
+     <media>
+         <preview_image>media/preview.jpg</preview_image> <!-- the path to your theme's preview image -->
+     </media>
+ </theme>
+```
+RegistrationPath:`$MAGENTO_ROOT/app/design/frontend/Drewsauce/Fresh/registration.php`
+```php
+<?php
+\Magento\Framework\Component\ComponentRegistrar::register(
+    \Magento\Framework\Component\ComponentRegistrar::THEME,
+    'frontend/Cloudways/Mytheme',
+    __DIR__
+```
+
+#### View: Blocks, Layouts, Templates
+1. Create Controller
+ * Controllers extend `\Magento\Framework\App\Action\Action` located at `app/code/{namespace}/{module}/Controller/{Index}/{Display.php}`
+
+```php
+<?php
+namespace Drewsauce\HelloWorld\Controller\Index;
+
+class Display extends \Magento\Framework\App\Action\Action
+{
+	protected $_pageFactory;
+	public function __construct(
+		\Magento\Framework\App\Action\Context $context,
+		\Magento\Framework\View\Result\PageFactory $pageFactory)
+	{
+		$this->_pageFactory = $pageFactory;
+		return parent::__construct($context);
+	}
+
+	public function execute()
+	{
+		return $this->_pageFactory->create();
+	}
+}
+```
+2. Create Layout
+  * TODO: https://www.mageplaza.com/magento-2-module-development/view-block-layout-template-magento-2.html
 
 
-* Magento Vault  
 
 
-* Adding New field for customer address  
+#### Relation between block and template (phtml) (ex. One block to multiple templates)  
+* Block creates a link between layouts and templates.  Blocks are defined using `<block>` element in `layout.xml` file.
+* One block can contain multiple templates. Block can be used in multiple pages or other blocks.
+*
+
+#### Magento Vault  
 
 
-* Final price in product view, what is affected by it  
+#### Adding New field for customer address  
 
 
-* How to add manufacturer image on each product in checkout cart  
+#### Final price in product view, what is affected by it  
 
 
-* Adding attribute by setup  
+#### How to add manufacturer image on each product in checkout cart  
 
 
-* Replace image in the item on configurable product on checkout cart  
+#### Adding attribute by setup  
 
 
-* Magento Setting, Total Amount Order Display  
+#### Replace image in the item on configurable product on checkout cart  
 
 
-* In which XML file are the default store configuration are set  
+#### Magento Setting, Total Amount Order Display  
 
 
-* How to use repositories to filter results  
+#### In which XML file are the default store configuration are set  
 
 
-* Which options would you used for adding new attributes to be included in flat table  
+#### How to use repositories to filter results  
 
 
-* Client would like to have custom URL for sorting (/dress-sort-by-name-filter-by-sale)  
+#### Which options would you used for adding new attributes to be included in flat table  
 
 
-* How would you capture HTML for specific action  
+#### Client would like to have custom URL for sorting (/dress-sort-by-name-filter-by-sale)  
 
 
-* Which steps are required to add new online payment methods  
+#### How would you capture HTML for specific action  
 
 
-* Plugins Lifecycle  
+#### Which steps are required to add new online payment methods  
 
 
-* Front Controllers
+#### Plugins Lifecycle  
 
 
-* Would a single not cacheable block would disable page cache for given page  
+#### Front Controllers
 
 
-* Widgets XML and dataSources  
+#### Would a single not cacheable block would disable page cache for given page  
 
 
-* Describe how to filter, sort, and specify the selected values for collections and repositories  
+#### Widgets XML and dataSources  
 
 
-* EAV (Entity Attribute Value) mostly  
+#### Describe how to filter, sort, and specify the selected values for collections and repositories  
 
 
-* Standard product types (simple, configurable, bundled, etc.).  
+#### EAV (Entity Attribute Value) mostly  
 
 
-* Customize actions of adding products to cart  
+#### Standard product types (simple, configurable, bundled, etc.).  
+
+
+#### Customize actions of adding products to cart  

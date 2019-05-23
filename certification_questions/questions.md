@@ -67,6 +67,7 @@ class Display extends \Magento\Framework\App\Action\Action
 		return parent::__construct($context);
 	}
 
+  // Controller must have execute method to process logic
 	public function execute()
 	{
 		return $this->_pageFactory->create();
@@ -83,6 +84,25 @@ class Display extends \Magento\Framework\App\Action\Action
 * Block creates a link between layouts and templates.  Blocks are defined using `<block>` element in `layout.xml` file.
 * One block can contain multiple templates. Block can be used in multiple pages or other blocks.
 *
+
+#### URL Processing
+* http://magento.com/catalog/product/view/id/1
+  * Front Name: catalog
+  * Controller Name: product
+  * Action Name: view
+  * Parameters: id=1
+
+#### Front Controllers
+* First step in handling requests and workflows in a request.
+* Gathers all routers, finds matching controller/router, obtains HTML generated to response object.
+* Implements `FrontControllerInterface` and has one method, `dispatch()`
+
+#### Request Flow
+* `index.php` -> `Bootstrap::run()` -> `App::launch()` -> `FrontController::dispatch()` -> `Router::match()` -> `Controller::execute()` -> `View::loadLayout()` -> `View::renderLayout()` -> `Response::sendResponse()`
+* Action\Action and Controller are used interchangeably.
+
+#### Routing Path
+* `FrontController::dispatch()` -> `Base Router` -> `URL Rewrite Router` -> `CMS Router` -> `Default Router` -> `Robot Controller Router`
 
 #### Magento Vault  
 
@@ -103,10 +123,11 @@ class Display extends \Magento\Framework\App\Action\Action
 
 
 #### Magento Setting, Total Amount Order Display  
-
+`vendor/magento/module-store/etc/config.xml` under `<config><default><sales><totals_sort>`  
+`System->Configuration->Sales->Checkout Total Sort Order`
 
 #### In which XML file are the default store configuration are set  
-
+`vendor/magento/module-store/etc/config.xml`
 
 #### How to use repositories to filter results  
 
@@ -115,7 +136,8 @@ class Display extends \Magento\Framework\App\Action\Action
 
 
 #### Client would like to have custom URL for sorting (/dress-sort-by-name-filter-by-sale)  
-
+* Need to convert the non-standard URL to a standard Magento URL by parsing it and setting it in `$request`  
+* ``$request->setModuleName('')->setControllerName('')->setActionName('')->setParam('','');``
 
 #### How would you capture HTML for specific action  
 
@@ -124,9 +146,6 @@ class Display extends \Magento\Framework\App\Action\Action
 
 
 #### Plugins Lifecycle  
-
-
-#### Front Controllers
 
 
 #### Would a single not cacheable block would disable page cache for given page  

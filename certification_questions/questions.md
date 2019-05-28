@@ -78,9 +78,6 @@ class Display extends \Magento\Framework\App\Action\Action
 2. Create Layout
   * TODO: https://www.mageplaza.com/magento-2-module-development/view-block-layout-template-magento-2.html
 
-
-
-
 #### Relation between block and template (phtml) (ex. One block to multiple templates)  
 * Extends AbstractBlock  
 * Block Types: Text, ListText, Messages, Redirect, Template
@@ -305,3 +302,60 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
 
 
 #### EAV (Entity Attribute Value)
+* Separates values from attributes and entities.
+* Encapsulates attribute-related business logic.
+* Makes multi-scope values possible.
+* Makes adding and removing attributes very easy, not a column everytime you have to add an attribute.
+* Core EAV tables are prefixed with `eav`
+* Each attribute is assigned a backend type (varchar, int, decimal, text)
+* Entity tables are split; each EAV entity has its own entity table (i,e, )`customer_entity`)
+* Special, unique attributes with global scope are integrated into entity tables (i.e. customer email, product sku); these special attributes have a static backend type because they exist in a core `eav` table.
+* Attribute value tables are also split by entity type and backend type. Default naming convention follows the table such as `catalog_product_entity_*` where `*` is associated with it's backend type of: `_int, _decimal, _varchar, _text, _datetime`.  So a varchar would be stored in `catalog_product_entity_varchar`
+* Some information is duplicated between tables for performance. (i.e. `entity_type_id` is also part of attribute value tables)
+* Main properties of `entity-type`: `entity_type_id`, `entity_type_code`. `entity_table`, `default_attribute_set_id`, `increment_model`.
+* Main properties of `entity-attribute`: `attribute_code`, `backend_type`, `backend_model`, `source_model`, `frontend_model`.
+<img src="../images/eav_storage.png">
+
+#### Module
+* Required to have `module.xml` and a `setup_version`
+* Install scripts only run once.
+* Upgrade scripts are run after an install and upon subsequent upgrades.
+* Always put `startSetup()` and `endSetup()` functions after your install logic.
+* `$context` provides information such as information version so the installer can base it's logic on this if needed.
+
+```php
+<?php
+use Magento\Framework\Setup\InstallSchemaInterface;
+use Magento\Framework\Setup\ModuleContextInterface;
+use Magento\Framework\Setup\SchemaSetupInterface;
+
+class InstallSchema implements InstallSchemaInterface
+{
+  public function install(SchemaSetupInterface $setup, ModuleContextInterface $context)
+  {
+    $setup->startSetup();
+    // ... logic
+    $setup->endSetup();
+  }
+}
+```
+
+```php
+<?php
+use Magento\Framework\Setup\InstallDataInterface;
+use Magento\Framework\Setup\ModuleContextInterface;
+use Magento\Framework\Setup\ModuleDataSetupInterface;
+
+class InstallData implements InstallDataInterface
+{
+  public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
+  {
+    // ... logic
+  }
+}
+```
+
+#### Steps to Install Module
+`php bin/magento module:enable <module> --clear-static-content`  
+`php bin/magento setup:upgrade`  
+`php bin/magento module:status`

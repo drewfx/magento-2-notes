@@ -115,18 +115,44 @@ class Display extends \Magento\Framework\App\Action\Action
 #### Adding new field for customer address  
 [Add new field to customer address](https://devdocs.magento.com/guides/v2.3/howdoi/checkout/checkout_new_field.html)
 
+#### Adding Attribute by Setup  
+* `Magento\Eav\Setup\EavSetup` used for EAV-based modules extend their setup class from it.  Implements methods for adding/manipulating attributes.
+* Used by `[Module_Name]\Setup\{InstallData, UpgradeData}` to add or modify attributes.
 
-#### How to add manufacturer image on each product in checkout cart  
+```php
+<?php
+public function install(ModuleDataSetupInterface $setup, ModuleContextInterface $context)
+{
+  $eavSetup = $this->eavSetupFactory->(['setup' => $setup]);
 
-
-#### Replace image in the item on configurable product on checkout cart  
-
-
-#### Adding attribute by setup  
-
-
-#### Final price in product view, what calculations.
-
+  $eavSetup->addAttribute(
+      \Magento\Catalog\Model\Product::Entity,
+      'is_featured',
+      [
+          'group' => 'General',
+          'type' => 'int',
+          'backend' => '',
+          'frontend' => '',
+          'label' => 'Is Featured',
+          'input' => 'boolean',
+          'class' => '',
+          'source' => 'Magento\Eav\Model\Entity\Attribute\Source\Boolean',
+          'global' => \Magento\Eav\Model\Entity\Attribute\ScopedAttributeInterface::SCOPE_GLOBAL,
+          'visible' => true,
+          'required' => false,
+          'user_defined' => false,
+          'default' => '1',
+          'searchable' => false,
+          'filterable' => false,
+          'comparable' => false,
+          'visible_on_front' => false,
+          'used_in_product_listing' => false,
+          'unique' => false,
+          'apply_to' => ''
+      ]
+  );
+}
+```
 
 #### Magento Setting, Total Amount Order Display  
 `vendor/magento/module-store/etc/config.xml` under `<config><default><sales><totals_sort>`  
@@ -194,7 +220,25 @@ $productFilterDemo->getProducts('sku', 'product_sku_value', 'eq');
 $productFilterDemo->getProducts('created_at', 'creation date', 'gt');
 ```
 
-#### Which options would you use for adding new attributes to be included in flat table  
+#### Which options would you use for adding new attributes to be included in flat table
+* using`UpdateSchema` to add a column `attribute` to said table.
+
+```php
+<?php
+use Magento\Framework\Setup\UpgradeSchemaInterface;
+use Magento\Framework\Setup\ModuleContextInterface;
+use Magento\Framework\Setup\SchemaSetupInterface;
+
+class UpgradeSchema extends UpgradeSchemaInterface
+{
+  public function upgrade(SchemaSetupInterface $setup, ModuleContextInterface $context)
+  {
+    $setup->startSetup();
+    // ... logic
+    $setup->endSetup();
+  }
+}
+```
 
 
 #### Client would like to have custom URL for sorting (/dress-sort-by-name-filter-by-sale)  
@@ -220,6 +264,15 @@ $productFilterDemo->getProducts('created_at', 'creation date', 'gt');
 
 
 #### Customize actions of adding products to cart  
+
+
+#### Final price in product view, what calculations.
+
+
+#### How to add manufacturer image on each product in checkout cart  
+
+
+#### Replace image in the item on configurable product on checkout cart  
 
 
 #### Model
@@ -298,9 +351,6 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
 }
 ```
 
-#### Describe how to filter, sort, and specify the selected values for collections and repositories.
-
-
 #### EAV (Entity Attribute Value)
 * Separates values from attributes and entities.
 * Encapsulates attribute-related business logic.
@@ -315,6 +365,15 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
 * Main properties of `entity-type`: `entity_type_id`, `entity_type_code`. `entity_table`, `default_attribute_set_id`, `increment_model`.
 * Main properties of `entity-attribute`: `attribute_code`, `backend_type`, `backend_model`, `source_model`, `frontend_model`.
 <img src="../images/eav_storage.png">
+* EAV Model extends `Magento\Framework\Model\AbstractModel` as a regular model would.
+* EAV ResrourceModels do not extend the same class, they extend `Magento\Eav\Model\Entity\AbstractEntity`
+  * `getAttribute()` `saveAttribute()` `getWriteConnection()` `getEntityTable()`
+* Attribute Models:
+  * `Backend` provides hooks for save, load, and delete operations with attribute value.
+    * Alternative to Observer or Plugin.
+  * `Source` options for select and multiselect attributes.
+  * `Frontend` rendering attribute values on the frontend.
+* If an EAV entity type has an attribute with the code `increment_id` and no backend model is set, the `Magento\Eav\Model\Entity\Increment` model is assigned automatically.  Sets new `increment_id` in `beforeSave()` hook method.
 
 #### Module
 * Required to have `module.xml` and a `setup_version`
@@ -359,3 +418,54 @@ class InstallData implements InstallDataInterface
 `php bin/magento module:enable <module> --clear-static-content`  
 `php bin/magento setup:upgrade`  
 `php bin/magento module:status`
+
+#### API
+* __Function of API in Magento 2__ Provides a structured form of communication between modules.
+* __Three descriptors of Magento 2 Components__: Business API, Data API, Repository.
+* __Why would you use an API rather than a Magento 1 object (such as a collection)?__ Fetch a list of objects from the database, save or delete an object.
+* Operational API: Business Logic API and Repositories
+  * Repositories provide service level collections.
+  * Business Logic API: Business Logic operations.
+* Framework API:
+  * Interfaces, implementations, and classes for various parts.
+
+#### Repositories/Search Criteria & Collections
+* __Repository__
+  * Provide access to databases through the services API.
+  * Unchanged with new releases.
+  * Deals with data objects.
+  * Provides high-level acess to the data.
+  * Supports SearchCriteria mechanism for filtering and sorting.
+  * Does nor provide low level access to the database.
+* __Collection__
+  * Might be changed, or totally replaced with different mechanism.
+  * Returns list of Magento Models
+  * Provides low-level access to the database.
+  * Provides own interface for most of the database operations, highly customizable.
+  * Provides access to the select object, gives ability to create custom queries.
+
+#### Describe how to filter, sort, and specify the selected values for collections and repositories.
+* __Repositories__ use `SearchCriteria`.
+  * First, all filters are created using `filterBuilder` are added to the builder, then the `SearchCriteria` object is instantiated using the builder's `create()` method.
+
+```php
+<?php
+public function getLoggedInGroups()
+{
+  $notLoggedInFilter[] = $this->filterBuilder
+    ->setField(GroupInterface::ID)
+    ->setConditionType('neq')
+    ->setValue(self::NOT_LOGGED_IN_ID)
+    ->create();
+  $groupAll[] = $this->filterBuilder
+    ->setField(GroupINterface::ID)
+    ->setConditionType('neq')
+    ->setValue(self::CUST_GROUP_ALL)
+    ->create();
+  $searchCriteria = $this->searchCrtieriaBuilder
+    ->addFilters($notLoggedInFilter)
+    ->addFilters($groupAll)
+    ->create();
+  return $this->groupRepository->getList($searchCriteria)->getItems();
+}
+```

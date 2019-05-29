@@ -240,7 +240,6 @@ class UpgradeSchema extends UpgradeSchemaInterface
 }
 ```
 
-
 #### Client would like to have custom URL for sorting (/dress-sort-by-name-filter-by-sale)  
 * Need to convert the non-standard URL to a standard Magento URL by parsing it and setting it in `$request`  
 * ``$request->setModuleName('')->setControllerName('')->setActionName('')->setParam('','');``
@@ -254,11 +253,17 @@ class UpgradeSchema extends UpgradeSchemaInterface
 #### Plugins Lifecycle  
 
 
-#### Would a single not cacheable block would disable page cache for given page  
+#### Would a single not cacheable block disable page cache for given page  
 
 
 #### Widgets XML and dataSources  
-
+* A Widget is basically an extension (Module) designed to provide a set of advanced configuration options. Due to greater flexibility and control, they are used to provide information and marketing content via the Magento Administrator panel.
+* Located at `/app/code/<Namespace>/<ModuleName>/etc/widget.xml`.
+* __DataSource__ requires a __DataProvider__ which is the class that obtains data, implements specific interface.
+* `DataSource` is javascript, but requires `DataProvider` which is a PHP class to obtain and hand off the data.
+* Every DataProvider must extend `Magento\Ui\DataProvider\AbstractDataProvider`.  
+  * Implements `getData()` which is used to extract data to Javascript.
+  * Has abstract method `getCollection()` which needs to be implemented in a specific `DataProvider`.
 
 #### Standard product types (simple, configurable, bundled, etc.).  
 
@@ -445,9 +450,11 @@ class InstallData implements InstallDataInterface
   * Provides access to the select object, gives ability to create custom queries.
 
 #### Describe how to filter, sort, and specify the selected values for collections and repositories.
-* __Repositories__ use `SearchCriteria`.
+* __Repositories__
+  * `SearchCriteria`.
   * First, all filters are created using `filterBuilder` are added to the builder, then the `SearchCriteria` object is instantiated using the builder's `create()` method.
-
+  * `SearchCriteria` implements `SearchCriteriaInterface` and extends class `AbstractSimpleObject`, uses `Search\FilterGroup` which uses `Filter`
+  * `SearchCriteriaBuilder` extends `AbstractSimpleObjectBuilder`
 ```php
 <?php
 public function getLoggedInGroups()
@@ -458,14 +465,17 @@ public function getLoggedInGroups()
     ->setValue(self::NOT_LOGGED_IN_ID)
     ->create();
   $groupAll[] = $this->filterBuilder
-    ->setField(GroupINterface::ID)
+    ->setField(GroupInterface::ID)
     ->setConditionType('neq')
     ->setValue(self::CUST_GROUP_ALL)
     ->create();
-  $searchCriteria = $this->searchCrtieriaBuilder
+  $searchCriteria = $this->searchCriteriaBuilder
     ->addFilters($notLoggedInFilter)
     ->addFilters($groupAll)
     ->create();
   return $this->groupRepository->getList($searchCriteria)->getItems();
 }
 ```
+  * `FilterGroup` extends `AbstractSimpleObject`, `FilterGroupBuilder` extends `AbstractSimpleObjectBuilder`
+    * `Filter` object exposes setters, however, like the `SearchCriteria` it will often be built using the `FilterBuilder` which injects all values during insantiation.
+  * `SortOrder` extends `AbstractSimpleObject`, `SortOrderBuilder` extends `AbstractSimpleObjectBuilder`

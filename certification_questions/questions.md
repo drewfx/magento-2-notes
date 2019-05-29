@@ -253,7 +253,11 @@ class UpgradeSchema extends UpgradeSchemaInterface
 #### Plugins Lifecycle  
 * Extend the behavior of native method within a Magento Framework class.
 * Plugins are combination of events and rewrites (features of M1).
-* Requiers `di.xml`
+* Uses `before` `after` or `around` methods to modify arguments/returned values from an original method of a core class.
+* Dependant on `sortOrder`, smallest value is highest priority. Higher value is lower priority.
+* __Note:__ Overriding a class is a conflicting change, meaning other extensions that declare a plugin for the same method might cease to function. Extending a class's behavior is a non-conflicting change.
+* __Note:__ Order: `before` listener with highest priority -> lowest, `around` listener with highest priority, `before` with lower priority, `around` with lower priority, `after` with lower priority -> higher priority.
+* Requires `di.xml`
 
 ```xml
 <config>
@@ -264,8 +268,6 @@ class UpgradeSchema extends UpgradeSchemaInterface
             disabled="true"/>
 </config>
 ```
-
-* Uses `before` `after` or `around` methods to modify arguments/returned values from an original method of a core class.
 
 #### Would a single not cacheable block disable page cache for given page  
 

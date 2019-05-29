@@ -288,7 +288,7 @@ class UpgradeSchema extends UpgradeSchemaInterface
 
 
 #### Final price in product view, what calculations.
-
+* Final price is a column for a product, it is the minimum price of many prices.
 
 #### How to add manufacturer image on each product in checkout cart  
 

@@ -251,7 +251,21 @@ class UpgradeSchema extends UpgradeSchemaInterface
 
 
 #### Plugins Lifecycle  
+* Extend the behavior of native method within a Magento Framework class.
+* Plugins are combination of events and rewrites (features of M1).
+* Requiers `di.xml`
 
+```xml
+<config>
+<type name="{ObservedType}"/>
+    <plugin name="{PluginName}"
+            type="{PluginClassName}"
+            sortOrder="1"
+            disabled="true"/>
+</config>
+```
+
+* Uses `before` `after` or `around` methods to modify arguments/returned values from an original method of a core class.
 
 #### Would a single not cacheable block disable page cache for given page  
 

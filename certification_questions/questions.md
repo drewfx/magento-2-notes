@@ -244,11 +244,27 @@ class UpgradeSchema extends UpgradeSchemaInterface
 * Need to convert the non-standard URL to a standard Magento URL by parsing it and setting it in `$request`  
 * ``$request->setModuleName('')->setControllerName('')->setActionName('')->setParam('','');``
 
-#### How would you capture HTML for specific action  
-
-
 #### Which steps are required to add new online payment methods  
+* Module must have dependencies on `Magento_Sales`, `Magento_Payment`, and `Magento_Checkout` in `composer.json` and `module.xml`
 
+```xml
+<config xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="urn:magento:framework:Module/etc/module.xsd">
+    <module name="Vendor_Module" setup_version="2.0.0">
+        <sequence>
+            ...
+            <module name="Magento_Sales"/>
+            <module name="Magento_Payment"/>
+            <module name="Magento_Checkout"/>
+            ...
+        </sequence>
+    </module>
+</config>
+```
+* Must implement `/etc/config.xml` [such as this](https://devdocs.magento.com/guides/v2.3/payments-integrations/base-integration/payment-option-config.html)
+* Implement Payment Method Facade instance of Payment Adapter in `/etc/di.xml` and follow arguments [must be configured](https://devdocs.magento.com/guides/v2.3/payments-integrations/base-integration/facade-configuration.html):  
+  * `code`, `formBlockType`, `infoBlockType`, `valueHandlerPool`, `validatePool`, `commandPool` 
+* Implement and configure payment actions like authorize, void, etc.
+* Add payment method to Admin, Checkout.
 
 #### Plugins Lifecycle  
 * Extend the behavior of native method within a Magento Framework class.
@@ -270,7 +286,7 @@ class UpgradeSchema extends UpgradeSchemaInterface
 ```
 
 #### Would a single not cacheable block disable page cache for given page  
-
+* Disabling a cache for a block on a page would disable caching for the whole page.
 
 #### Widgets XML and dataSources  
 * A Widget is basically an extension (Module) designed to provide a set of advanced configuration options. Due to greater flexibility and control, they are used to provide information and marketing content via the Magento Administrator panel.
@@ -282,19 +298,46 @@ class UpgradeSchema extends UpgradeSchemaInterface
   * Has abstract method `getCollection()` which needs to be implemented in a specific `DataProvider`.
 
 #### Standard product types (simple, configurable, bundled, etc.).  
-
+1. __Simple Product:__ It’s the most popular basic type of products. It corresponds to the existing product with a unique SKU (Store Keeping Unit).
+2. __Virtual Product:__ This type of product is used to create products that are not physically present on the store (paid subscriptions, services, insurance, etc.).
+3. __Configurable Product:__ This type allows you to create products with a list of variations. For example, a sports T-shirt of different colors and sizes. Each variation of a configurable product corresponds to a Simple Product, which has its own unique SKU, which allows you to keep track of the residuals for each option.
+4. __Grouped Product:__ This type allows you to combine into sets individual Simple or Virtual Products, that are somehow related to each other. As a result, a buyer gets an opportunity to buy all the needed products at once, instead of buying them separately. On the page of a Grouped Product customers can choose particular products that they would like to purchase from the set, as well as their quantity. The selected products are added to cart as individual items.
+5. __Bundle Product:__ This type of product allows customers to independently “create” a product using a set of options.
+6. __Downloadable Product:__ This type of product is used to create digital products that can be represented by one or multiple files and can be downloaded by customers.
 
 #### Customize actions of adding products to cart  
-
+* Observer for `checkout_cart_product_add_after`
 
 #### Final price in product view, what calculations.
 * Final price is a column for a product, it is the minimum price of many prices.
 
 #### How to add manufacturer image on each product in checkout cart  
+* Create `di.xml` under `app/code/[Namespace]/[Module]/etc/frontend`
+* Create `Image.php` under `app/code/[Namespace]/[Module]/Plugin/CheckoutCart`
+```php 
+<?php
+ 
+namespace Drewsauce\CartImageReplacement\Plugin\CheckoutCart;
+ 
+class Image
+{
+    public function afterGetImage($item, $result)
+    {
+     if(YOUR_CONDITION) {
+     $result->setImageUrl( YOUR_IMAGE_URL );
+     }
+     return $result;
+    }
+}
 
+```
 
 #### Replace image in the item on configurable product on checkout cart  
-
+* With the so-called Configurable Swatches which allow "Product Image Swap".
+  * Swap images defined by Option Label
+    * ne way to configure swap images is to upload images to a configurable product with labels exactly matching the specific option labels (for example, Royal Blue).
+  * Swap images defined by Base Image
+    * Another way to configure swap images is to upload base images to each child product of the configurable product.
 
 #### Model
 * Must know what resource model to use.  Passed in the `_init()` function in the `_construct()`

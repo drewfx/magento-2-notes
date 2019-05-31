@@ -71,7 +71,7 @@ class Display extends \Magento\Framework\App\Action\Action
 		return parent::__construct($context);
 	}
 
-  // Controller must have execute method to process logic
+	// Controller must have execute method to process logic
 	public function execute()
 	{
 		return $this->_pageFactory->create();
@@ -79,7 +79,7 @@ class Display extends \Magento\Framework\App\Action\Action
 }
 ```
 2. Create Layout
-  * TODO: https://www.mageplaza.com/magento-2-module-development/view-block-layout-template-magento-2.html
+  * @todo: https://www.mageplaza.com/magento-2-module-development/view-block-layout-template-magento-2.html
 
 #### Relation between block and template (phtml) (ex. One block to multiple templates)  
 * Extends AbstractBlock  
@@ -107,7 +107,7 @@ class Display extends \Magento\Framework\App\Action\Action
 * Action\Action and Controller are used interchangeably.
 
 #### Routing Path  
-* `FrontController::dispatch()` -> `Base Router` -> `URL Rewrite Router` -> `CMS Router` -> `Default Router` -> `Robot Controller Router`
+* `FrontController::dispatch()` -> `Robot Controller Router` -> `URL Rewrite Router` -> `Base Router` -> `CMS Router` -> `Default Router` -> 
 
 #### Magento Vault  
 1. Adding vault enabling controls.
@@ -319,18 +319,18 @@ class UpgradeSchema extends UpgradeSchemaInterface
 * Create `Image.php` under `app/code/[Namespace]/[Module]/Plugin/CheckoutCart`
 ```php 
 <?php
- 
+
 namespace Drewsauce\CartImageReplacement\Plugin\CheckoutCart;
  
 class Image
 {
-    public function afterGetImage($item, $result)
-    {
-     if(YOUR_CONDITION) {
-     $result->setImageUrl( YOUR_IMAGE_URL );
+  public function afterGetImage($item, $result)
+  {
+     if (YOUR_CONDITION) {
+        $result->setImageUrl( YOUR_IMAGE_URL );
      }
      return $result;
-    }
+  }
 }
 
 ```

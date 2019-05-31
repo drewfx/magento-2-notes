@@ -361,7 +361,7 @@ class Image
   public function afterGetImage($item, $result)
   {
      if (YOUR_CONDITION) {
-        $result->setImageUrl( YOUR_IMAGE_URL );
+        $result->setImageUrl(YOUR_IMAGE_URL);
      }
      return $result;
   }
@@ -371,7 +371,7 @@ class Image
 #### Replace image in the item on configurable product on checkout cart  
 * With the so-called Configurable Swatches which allow "Product Image Swap".
   * Swap images defined by Option Label
-    * ne way to configure swap images is to upload images to a configurable product with labels exactly matching the specific option labels (for example, Royal Blue).
+    * One way to configure swap images is to upload images to a configurable product with labels exactly matching the specific option labels (for example, Royal Blue).
   * Swap images defined by Base Image
     * Another way to configure swap images is to upload base images to each child product of the configurable product.
 
@@ -380,7 +380,7 @@ class Image
 * Notice these are protected function and not PHP magic methods because they have one underscore.  
 * Each Model must have a ResourceModel, and ResourceCollection.
 * Models encapsulate storage independent business logic.  Models don't know about storage persistence.
-* Resource Models encapsulate the storage layer logic.  All storage actions are responsibility of ResourceModel.
+* Resource Models encapsulate the storage layer logic.  All storage actions are the responsibility of a Resource Model.
 * Resource Collections represent list of models of a specific type. Used for working with multiple records.
 
 ```php
@@ -464,15 +464,17 @@ class Collection extends \Magento\Framework\Model\ResourceModel\Db\Collection\Ab
 * Some information is duplicated between tables for performance. (i.e. `entity_type_id` is also part of attribute value tables)
 * Main properties of `entity-type`: `entity_type_id`, `entity_type_code`. `entity_table`, `default_attribute_set_id`, `increment_model`.
 * Main properties of `entity-attribute`: `attribute_code`, `backend_type`, `backend_model`, `source_model`, `frontend_model`.
+
 <img src="../images/eav_storage.png">
-* EAV Model extends `Magento\Framework\Model\AbstractModel` as a regular model would.
-* EAV ResrourceModels do not extend the same class, they extend `Magento\Eav\Model\Entity\AbstractEntity`
-  * `getAttribute()` `saveAttribute()` `getWriteConnection()` `getEntityTable()`
-* Attribute Models:
-  * `Backend` provides hooks for save, load, and delete operations with attribute value.
-    * Alternative to Observer or Plugin.
-  * `Source` options for select and multiselect attributes.
-  * `Frontend` rendering attribute values on the frontend.
+
+* EAV Model extends `Magento\Framework\Model\AbstractModel` as a regular model would.  
+* EAV ResrourceModels do not extend the same class, they extend `Magento\Eav\Model\Entity\AbstractEntity`  
+  * `getAttribute()` `saveAttribute()` `getWriteConnection()` `getEntityTable()`  
+* Attribute Models:  
+  * `Backend` provides hooks for save, load, and delete operations with attribute value.  
+    * Alternative to Observer or Plugin.  
+  * `Source` options for select and multiselect attributes.  
+  * `Frontend` rendering attribute values on the frontend.  
 * If an EAV entity type has an attribute with the code `increment_id` and no backend model is set, the `Magento\Eav\Model\Entity\Increment` model is assigned automatically.  Sets new `increment_id` in `beforeSave()` hook method.
 
 #### Module

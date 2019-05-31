@@ -107,7 +107,7 @@ class Display extends \Magento\Framework\App\Action\Action
 * Action\Action and Controller are used interchangeably.
 
 #### Routing Path  
-* `FrontController::dispatch()` -> `Robot Controller Router` -> `URL Rewrite Router` -> `Base Router` -> `CMS Router` -> `Default Router` -> 
+* `FrontController::dispatch()` -> `Robot Controller Router` -> `URL Rewrite Router` -> `Base Router` -> `CMS Router` -> `Default Router`
 
 #### Magento Vault  
 1. Adding vault enabling controls.
@@ -216,10 +216,9 @@ Ex:
 ```php
 <?php
 // Check out the following sample class. To filter by SKU, try this:
-
 $productFilterDemo->getProducts('sku', 'product_sku_value', 'eq');
-// To get products created after specific date, this:
 
+// To get products created after specific date, this:
 $productFilterDemo->getProducts('created_at', 'creation date', 'gt');
 ```
 
@@ -312,11 +311,46 @@ class UpgradeSchema extends UpgradeSchemaInterface
 * Observer for `checkout_cart_product_add_after`
 
 #### Final price in product view, what calculations.
-* Final price is a column for a product, it is the minimum price of many prices.
+* __Simple Product__
+```php
+<?php 
+$specialPrice = $product->getPriceInfo()->getPrice('special_price')->getValue();
+```
+
+* __Configurable Product__
+```php
+<?php 
+if ($product->getTypeId() == 'configurable') {
+      $regularPrice = $basePrice->getMinRegularAmount()->getValue();
+      $specialPrice = $product->getFinalPrice();
+}
+```
+
+* __Bundle Product__
+```php
+<?php 
+if ($product->getTypeId() == 'bundle') {
+      $specialPrice = $product->getPriceInfo()->getPrice('final_price')->getMinimalPrice()->getValue();            
+}
+```
+
+* __Group Product__
+```php
+<?php 
+if ($product->getTypeId() == 'grouped') {
+      $usedProds = $product->getTypeInstance(true)->getAssociatedProducts($product);            
+      foreach ($usedProds as $child) {
+          if ($child->getId() != $product->getId()) {
+                $specialPrice += $child->getFinalPrice();
+          }
+      }
+}
+```
 
 #### How to add manufacturer image on each product in checkout cart  
 * Create `di.xml` under `app/code/[Namespace]/[Module]/etc/frontend`
 * Create `Image.php` under `app/code/[Namespace]/[Module]/Plugin/CheckoutCart`
+
 ```php 
 <?php
 
@@ -332,7 +366,6 @@ class Image
      return $result;
   }
 }
-
 ```
 
 #### Replace image in the item on configurable product on checkout cart  

@@ -542,7 +542,7 @@ public function getLoggedInGroups()
     * `Filter` object exposes setters, however, like the `SearchCriteria` it will often be built using the `FilterBuilder` which injects all values during insantiation.
   * `SortOrder` extends `AbstractSimpleObject`, `SortOrderBuilder` extends `AbstractSimpleObjectBuilder`
 * __Collections__
-  * Use 
+  * @todo 
 
 ### Quiz:
 __A regular Magento 2 route has how many chunks?__ `4`  

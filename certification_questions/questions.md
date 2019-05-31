@@ -1,3 +1,6 @@
+## Magento 2 Certification Information and Quiz
+###### This information is based off of the [Magento 2 Fundamentals](https://u.magento.com/fundamentals-of-magento-2-development) course and [Magento 2 Documentation](https://devdocs.magento.com/)
+
 #### Layout XML how to set ViewModel into model  
 * Offloads features from `Block` classes into separate `ViewModel` classes.  
 * Extends `\Magento\Framework\View\Element\Block\ArgumentInterface`
@@ -561,7 +564,7 @@ __Which of the following is a requirement for a class to implement a data interf
 __What object is typically returned by the getList() method of a repository:__ `SearchResult`  
 __How can you assign the implementation of an API interface class:__ `Use the preference mechanism in di.xml`  
 __A typical getList() method in a repository class will use which object as a parameter:__ `SearchCriteria`  
-__What class must every repository fixed:__ `The is no mandatory class to extend`  
+__What class must every repository extend:__ `There is no mandatory class to extend`  
 __Which file is responsible for adding new configuration options to system configuration (under etc/adminhtml):__ `system.xml`  
 __Which one of the following is a class that admin actions must extend:__ `\Magento\Backend\App\Action`  
 __In order to add a new column to a grid, you should:__ `Add a new column in the layout xml file`  
